@@ -1,128 +1,76 @@
-# 2D-Solar-Chimney-Analysis
+# 2D Solar Chimney: Heated-Wall Channel Flow
 
-# ♨️ Wall Heating CFD Simulation with ANSYS Fluent
+**Steady 2D CFD analysis in ANSYS Fluent of heat transfer from a heated (solar-absorbing) wall to air flowing through a channel. The focus is on the development of the thermal boundary layer, the wall heat flux and the total heat transfer rate.**
 
-This project analyzes steady-state heat transfer from a heated wall to a 2D air domain using **ANSYS Fluent**. It focuses on **wall heat flux behavior** and **total heat transfer rate**, simulating how a **330 K left wall** affects incoming air at **300 K**. It supports my academic path into **CFD-based renewable energy system optimization**.
+![ANSYS Fluent](https://img.shields.io/badge/ANSYS-Fluent-FFB71B?style=flat-square)
+![Physics](https://img.shields.io/badge/Physics-Convective%20heat%20transfer-4a6fa5?style=flat-square)
+![Renewables](https://img.shields.io/badge/Application-Solar%20chimney-2ea44f?style=flat-square)
 
----
-
-## 🎯 Problem Definition
-
-- **Simulation Type:** Steady-State, Laminar, 2D  
-- **Software:** ANSYS Fluent  
-- **Goal:** Investigate surface heat flux and total heat transfer rate  
-- **Relevance:** Renewable Energy, Thermal Optimization, Graduate Research
-
----
-
-## 🛠️ Setup Details
-
-| Feature | Setting |
-|--------|---------|
-| **Solver** | Pressure-Based, Steady |
-| **Energy Equation** | Enabled |
-| **Material** | Air (Ideal Gas) |
-| **Inlet** | Pressure Inlet – 300 K |
-| **Outlet** | Pressure Outlet |
-| **Left Wall** | Fixed Temperature – 330 K |
-| **Right Wall** | Adiabatic |
-| **Interior Fluid** | Defined via boolean operation (DesignModeler) |
-| **Mesh** | ~**61,100 structured elements**, with bias near heated wall |
-
----
-
-## 📷 Results
-
-### 🧱 Mesh View  
-![Mesh](mesh.png)
-
-### 🔥 Temperature Contour  
 ![Temperature](temperature_contour.png)
 
-### 💨 Velocity Magnitude  
-![Velocity](velocity_contour.png)
+---
 
-### 🟠 Static Pressure Contour  
-![Static Pressure](static_pressure.png)
+## Problem Definition
 
-### 📈 Wall Heat Flux Distribution  
-![Wall Heat Flux](wall_heat_flux.png)
+A solar chimney drives air along a wall heated by solar radiation. This model captures that wall-to-air heat transfer in a 2D channel. The left wall is held at 330 K and air enters at 300 K.
 
-### ♨️ Total Heat Transfer Rate Distribution  
-![Total Heat Transfer Rate](total_heat_transfer_rate.png)
+## Setup
 
-### 📉 Residuals  
+| Item | Setting |
+|---|---|
+| **Solver** | Pressure-based, steady, laminar |
+| **Energy equation** | On |
+| **Fluid** | Air, ideal gas |
+| **Inlet** | Pressure inlet, 300 K |
+| **Outlet** | Pressure outlet |
+| **Left wall** | Fixed temperature, 330 K (heated absorber) |
+| **Right wall** | Adiabatic |
+| **Fluid domain** | Created with a Boolean operation in DesignModeler |
+| **Mesh** | ≈ 61,100 structured cells, biased towards the heated wall |
+
+![Mesh](mesh.png)
+
+---
+
+## Results
+
+| Velocity magnitude | Static pressure |
+|:---:|:---:|
+| ![Velocity](velocity_contour.png) | ![Static Pressure](static_pressure.png) |
+
+| Wall heat flux | Total heat transfer rate |
+|:---:|:---:|
+| ![Wall Heat Flux](wall_heat_flux.png) | ![Total Heat Transfer Rate](total_heat_transfer_rate.png) |
+
+### Observations
+
+- **Wall heat flux** (area-weighted *Total Surface Heat Flux*) falls from about 20 W/m² to about 2 W/m² along the heated wall. The thermal boundary layer grows and the wall-normal temperature gradient drops.
+- **Heat transfer rate** (*Surface Integrals → Heat Transfer Rate*) drops from about 60 W near the inlet to about 10 W towards the outlet, because the air warms up and the driving temperature difference shrinks.
+- **Static pressure** falls smoothly from inlet to outlet, with no unphysical oscillations.
+- **Convergence:** all residuals fell below 10⁻⁵ within about 150 iterations.
+
 ![Residuals](residuals.png)
 
----
+### Next steps
 
-## 📊 Observations
-
-- **Wall Heat Flux** (W/m²):  
-  > Computed via *area-weighted average* of `Wall Fluxes > Total Surface Heat Flux`  
-  > Decreases parabolically along the wall from ~20 W/m² to ~2 W/m²  
-  > Due to thermal boundary layer development
-
-- **Total Heat Transfer Rate** (W):  
-  > Found under `Surface Integrals > Heat Transfer Rate`  
-  > Decreases from ~60 W at the inlet toward ~10 W at the outlet  
-  > Caused by reduction in local temperature gradient as air heats up
-
-- **Static Pressure:**  
-  > Smooth drop from inlet to outlet confirms consistent pressure-driven flow, no abnormal fluctuations.
-
-- **Residuals:**  
-  > All residuals fell below 1e-5 within ~150 iterations. Steady-state convergence was successful.
-
-- **Total Heat Transfer Rate (Graphical Trend):**  
-  > Shows parabolic decay from hot inlet zone to cooler outlet zones, due to thermal equilibrium establishment.
+- Turn on gravity with the Boussinesq model so that the flow is truly **buoyancy-driven** (natural draft).
+- Replace the fixed wall temperature with a **solar heat flux** boundary condition.
+- Compare the Nusselt number with vertical-plate natural-convection correlations.
 
 ---
 
-## 🔧 Engineering Takeaways
-
-- **Mesh Biasing:** Applied toward the left (hot) wall to better resolve boundary layer effects
-- **Post-Processing:** Focused on heat transfer-related results; no flow turbulence present
-- **Steady Solver:** Sufficient to capture the thermal profile; no transient simulation required
-- **Design Insight:** Right wall modeled as adiabatic to isolate heat transfer from one side only
-
----
-
-## 🌱 Why This Project Matters
-
-After being rejected from WUT's aerospace program, I pivoted toward a hybrid academic plan combining **renewables + fluid dynamics**.  
-This simulation prepares me for potential research projects at:
-
-> 🧠 Smart Renewable Energy Engineering @ Gdańsk University of Technology  
-> 🔋 Renewable Systems + CFD + Thermal Optimization
-
----
-
-## 🙋 About Me
-
-👋 I'm a Mechanical Engineering graduate with strong interest in **CFD**, **heat transfer**, and **AI-enhanced engineering**.  
-My MSc and future PhD goals revolve around simulation-driven design and energy system efficiency.  
-
----
-
-## 🗂️ File List
+## Repository Contents
 
 | File | Description |
-|------|-------------|
-| `*.cas / *.dat` | ANSYS Fluent simulation files |
-| `mesh.png` | Mesh structure |
-| `temperature_contour.png` | Thermal field |
+|---|---|
+| `mesh.png` | Mesh |
+| `temperature_contour.png` | Temperature field |
 | `velocity_contour.png` | Velocity magnitude |
-| `static_pressure.png` | Static pressure field |
-| `wall_heat_flux.png` | Heat flux along heated wall |
-| `total_heat_transfer_rate.png` | Graph of heat transfer rate drop |
-| `residuals.png` | Convergence plot |
-| `README.md` | This documentation |
+| `static_pressure.png` | Static pressure |
+| `wall_heat_flux.png` | Heat flux along the heated wall |
+| `total_heat_transfer_rate.png` | Heat transfer rate |
+| `residuals.png` | Convergence history |
 
+## Author
 
----
-
-## 🧪 MATLAB Note
-
-Analytical validation using MATLAB was skipped. Fluent’s built-in outputs for both **average flux** and **total rate** reliably captured expected physical behavior. Results reflect correct **boundary layer growth** and associated heat transfer trends.
-
+**Burak Yörükçü** · [GitHub](https://github.com/CFDBY) · burakyorukcu@outlook.com
